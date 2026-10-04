@@ -1,0 +1,31 @@
+---
+const services = [
+  { title: 'Webs corporativas', text: 'Tu negocio presentado de forma profesional, con un diseño único que transmite confianza y genera contactos.', icon: 'M3 5h18v12H3zM8 21h8M12 17v4' },
+  { title: 'Tiendas online', text: 'E-commerce rápidos y seguros con pasarela de pago, gestión de productos y una experiencia de compra sin fricciones.', icon: 'M6 6h15l-1.5 9h-12zM6 6 5 3H2M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z' },
+  { title: 'Landing pages', text: 'Páginas enfocadas a un único objetivo: captar leads o vender. Ideales para campañas de Google y redes sociales.', icon: 'M13 2 3 14h9l-1 8 10-12h-9z' },
+  { title: 'Aplicaciones a medida', text: 'Paneles, áreas de clientes, reservas o integraciones con tus herramientas. Software que se adapta a ti.', icon: 'm8 9-4 3 4 3m8-6 4 3-4 3M14 5l-4 14' },
+  { title: 'SEO y rendimiento', text: 'Optimización técnica, Core Web Vitals y estructura pensada para que Google te encuentre antes que a tu competencia.', icon: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35' },
+  { title: 'Mantenimiento', text: 'Actualizaciones, copias de seguridad, seguridad y mejoras continuas para que tu web siempre esté a punto.', icon: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z' },
+];
+---
+<section id="servicios" class="py-24">
+  <div class="container-lb">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="eyebrow">Servicios</p>
+      <h2 class="section-title">Todo lo que tu negocio necesita en internet</h2>
+      <p class="mt-4 text-zinc-400">Desde una web sencilla hasta una plataforma completa. Te acompañamos en todo el proceso.</p>
+    </div>
+
+    <div class="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {services.map((s) => (
+        <article class="card reveal group transition hover:-translate-y-1 hover:border-brand-400/40">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-400/10 text-brand-400 transition group-hover:bg-brand-400 group-hover:text-ink-950">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d={s.icon} /></svg>
+          </div>
+          <h3 class="mt-5 text-xl font-semibold">{s.title}</h3>
+          <p class="mt-2 text-zinc-400">{s.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

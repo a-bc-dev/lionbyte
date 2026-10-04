@@ -1,0 +1,112 @@
+---
+const projectTypes = ['Web corporativa', 'Tienda online', 'Landing page', 'Aplicación a medida', 'Rediseño de mi web', 'Otro'];
+const budgets = ['Menos de 1.000€', '1.000€ – 3.000€', '3.000€ – 6.000€', 'Más de 6.000€', 'Aún no lo sé'];
+---
+<section id="contacto" class="relative overflow-hidden py-24">
+  <div class="pointer-events-none absolute -bottom-40 left-1/2 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-brand-500/15 blur-[120px]"></div>
+
+  <div class="container-lb relative grid gap-12 lg:grid-cols-5">
+    <div class="reveal lg:col-span-2">
+      <p class="eyebrow">Contacto</p>
+      <h2 class="section-title">¿Hablamos de tu proyecto?</h2>
+      <p class="mt-4 text-zinc-400">Cuéntanos qué necesitas y te respondemos en menos de 24 horas con ideas y un presupuesto orientativo. Sin compromiso.</p>
+      <ul class="mt-8 space-y-4 text-sm">
+        <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> Primera consulta gratuita</li>
+        <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> Presupuesto cerrado y transparente</li>
+        <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> Tus datos nunca se comparten</li>
+      </ul>
+    </div>
+
+    <form id="contact-form" class="card reveal space-y-5 lg:col-span-3 sm:!p-8" novalidate>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="block">
+          <span class="mb-1.5 block text-sm font-medium text-white">Nombre *</span>
+          <input name="name" required autocomplete="name" class="field" placeholder="Tu nombre" />
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block text-sm font-medium text-white">Email *</span>
+          <input name="email" type="email" required autocomplete="email" class="field" placeholder="tu@empresa.com" />
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block text-sm font-medium text-white">Teléfono</span>
+          <input name="phone" type="tel" autocomplete="tel" class="field" placeholder="Opcional" />
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block text-sm font-medium text-white">Empresa</span>
+          <input name="company" autocomplete="organization" class="field" placeholder="Opcional" />
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block text-sm font-medium text-white">Tipo de proyecto *</span>
+          <select name="projectType" required class="field">
+            <option value="" disabled selected>Selecciona…</option>
+            {projectTypes.map((t) => <option>{t}</option>)}
+          </select>
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block text-sm font-medium text-white">Presupuesto</span>
+          <select name="budget" class="field">
+            <option value="" selected>Selecciona…</option>
+            {budgets.map((b) => <option>{b}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <label class="block">
+        <span class="mb-1.5 block text-sm font-medium text-white">Cuéntanos tu proyecto *</span>
+        <textarea name="message" required rows="5" class="field resize-y" placeholder="¿Qué necesitas? ¿Tienes web actualmente? ¿Para cuándo lo quieres?"></textarea>
+      </label>
+
+      <!-- Honeypot anti-spam: invisible para personas -->
+      <div class="absolute -left-[9999px]" aria-hidden="true">
+        <label>No rellenar <input name="website" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <label class="flex items-start gap-3 text-sm text-zinc-400">
+        <input name="consent" type="checkbox" required class="mt-0.5 h-4 w-4 accent-brand-400" />
+        <span>He leído y acepto la <a href="/privacidad" class="text-brand-400 underline-offset-2 hover:underline">política de privacidad</a>. *</span>
+      </label>
+
+      <button type="submit" class="btn-primary w-full disabled:cursor-wait disabled:opacity-60">
+        <span data-label>Enviar solicitud</span>
+      </button>
+
+      <p id="form-status" role="status" aria-live="polite" class="hidden rounded-xl px-4 py-3 text-sm"></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  import { actions, isInputError } from 'astro:actions';
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status')!;
+  const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+  const label = button.querySelector('[data-label]')!;
+
+  function show(msg: string, ok: boolean) {
+    status.textContent = msg;
+    status.className = `rounded-xl px-4 py-3 text-sm ${ok ? 'bg-emerald-500/10 text-emerald-300' : 'bg-red-500/10 text-red-300'}`;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+
+    button.disabled = true;
+    label.textContent = 'Enviando…';
+
+    const { error } = await actions.contact(new FormData(form));
+
+    button.disabled = false;
+    label.textContent = 'Enviar solicitud';
+
+    if (!error) {
+      form.reset();
+      show('¡Gracias! Hemos recibido tu mensaje y te responderemos en menos de 24 horas.', true);
+    } else if (isInputError(error)) {
+      show('Revisa los campos marcados: ' + Object.values(error.fields).flat().join(' '), false);
+    } else {
+      show('No se pudo enviar el mensaje. Inténtalo de nuevo o escríbenos directamente por email.', false);
+    }
+  });
+</script>

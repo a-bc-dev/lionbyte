@@ -1,0 +1,70 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'LionByte · Desarrollo web a medida que hace crecer tu negocio',
+  description = 'Diseñamos y desarrollamos webs rápidas, modernas y optimizadas para SEO: webs corporativas, tiendas online y aplicaciones a medida. Pide tu presupuesto sin compromiso.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'LionByte',
+  url: Astro.site?.toString(),
+  description,
+  areaServed: 'ES',
+  serviceType: ['Desarrollo web', 'Diseño web', 'Tiendas online', 'SEO técnico'],
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#07080c" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LionByte" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <slot />
+
+    <script>
+      const els = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.12 },
+      );
+      els.forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

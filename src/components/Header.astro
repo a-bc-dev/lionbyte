@@ -1,0 +1,48 @@
+---
+import Logo from './Logo.astro';
+const links = [
+  { href: '/#servicios', label: 'Servicios' },
+  { href: '/#proceso', label: 'Proceso' },
+  { href: '/#precios', label: 'Precios' },
+  { href: '/#faq', label: 'FAQ' },
+];
+---
+<header class="sticky top-0 z-50 border-b border-white/5 bg-ink-950/70 backdrop-blur-lg">
+  <nav class="container-lb flex h-16 items-center justify-between">
+    <a href="/" class="flex items-center gap-2.5 font-display text-lg font-bold text-white">
+      <Logo /> Lion<span class="text-brand-400">Byte</span>
+    </a>
+
+    <ul class="hidden items-center gap-8 text-sm md:flex">
+      {links.map((l) => <li><a href={l.href} class="transition hover:text-white">{l.label}</a></li>)}
+    </ul>
+
+    <a href="/#contacto" class="btn-primary hidden !py-2 text-sm md:inline-flex">Pide presupuesto</a>
+
+    <button id="menu-btn" class="rounded-lg p-2 text-white md:hidden" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
+    </button>
+  </nav>
+
+  <div id="mobile-menu" class="hidden border-t border-white/5 md:hidden">
+    <ul class="container-lb flex flex-col gap-1 py-4">
+      {links.map((l) => <li><a href={l.href} class="block rounded-lg px-3 py-2 hover:bg-white/5">{l.label}</a></li>)}
+      <li class="pt-2"><a href="/#contacto" class="btn-primary w-full">Pide presupuesto</a></li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('menu-btn')!;
+  const menu = document.getElementById('mobile-menu')!;
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  menu.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+    }),
+  );
+</script>
