@@ -1,73 +1,84 @@
 ---
-const projectTypes = ['Web corporativa', 'Tienda online', 'Landing page', 'Aplicación a medida', 'Rediseño de mi web', 'Otro'];
-const budgets = ['Menos de 1.000€', '1.000€ – 3.000€', '3.000€ – 6.000€', 'Más de 6.000€', 'Aún no lo sé'];
+import { getLang, routes, useTranslations } from '../i18n/utils';
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang).contact;
+const f = t.fields;
+
+// Textos que necesita el script del navegador
+const i18n = {
+  sending: t.sending,
+  submit: t.submit,
+  success: t.success,
+  invalid: t.invalid,
+  error: t.error,
+  labels: { name: f.name, email: f.email, phone: f.phone, company: f.company, projectType: f.projectType, budget: f.budget, message: f.message, consent: f.consent },
+};
 ---
-<section id="contacto" class="relative overflow-hidden py-24">
+<section id="contact" class="relative overflow-hidden py-24">
   <div class="pointer-events-none absolute -bottom-40 left-1/2 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-brand-500/15 blur-[120px]"></div>
 
   <div class="container-lb relative grid gap-12 lg:grid-cols-5">
     <div class="reveal lg:col-span-2">
-      <p class="eyebrow">Contacto</p>
-      <h2 class="section-title">¿Hablamos de tu proyecto?</h2>
-      <p class="mt-4 text-zinc-400">Cuéntanos qué necesitas y te respondemos en menos de 24 horas con ideas y un presupuesto orientativo. Sin compromiso.</p>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section-title">{t.title}</h2>
+      <p class="mt-4 text-zinc-400">{t.subtitle}</p>
       <ul class="mt-8 space-y-4 text-sm">
-        <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> Primera consulta gratuita</li>
-        <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> Presupuesto cerrado y transparente</li>
-        <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> Tus datos nunca se comparten</li>
+        {t.perks.map((p) => <li class="flex items-center gap-3"><span class="text-brand-400">✓</span> {p}</li>)}
       </ul>
     </div>
 
-    <form id="contact-form" class="card reveal space-y-5 lg:col-span-3 sm:!p-8" novalidate>
+    <form id="contact-form" data-i18n={JSON.stringify(i18n)} class="card reveal space-y-5 lg:col-span-3 sm:!p-8" novalidate>
+      <input type="hidden" name="lang" value={lang} />
       <div class="grid gap-5 sm:grid-cols-2">
         <label class="block">
-          <span class="mb-1.5 block text-sm font-medium text-white">Nombre *</span>
-          <input name="name" required autocomplete="name" class="field" placeholder="Tu nombre" />
+          <span class="mb-1.5 block text-sm font-medium text-white">{f.name} *</span>
+          <input name="name" required minlength="2" autocomplete="name" class="field" placeholder={f.namePh} />
         </label>
         <label class="block">
-          <span class="mb-1.5 block text-sm font-medium text-white">Email *</span>
-          <input name="email" type="email" required autocomplete="email" class="field" placeholder="tu@empresa.com" />
+          <span class="mb-1.5 block text-sm font-medium text-white">{f.email} *</span>
+          <input name="email" type="email" required autocomplete="email" class="field" placeholder={f.emailPh} />
         </label>
         <label class="block">
-          <span class="mb-1.5 block text-sm font-medium text-white">Teléfono</span>
-          <input name="phone" type="tel" autocomplete="tel" class="field" placeholder="Opcional" />
+          <span class="mb-1.5 block text-sm font-medium text-white">{f.phone}</span>
+          <input name="phone" type="tel" autocomplete="tel" class="field" placeholder={f.optional} />
         </label>
         <label class="block">
-          <span class="mb-1.5 block text-sm font-medium text-white">Empresa</span>
-          <input name="company" autocomplete="organization" class="field" placeholder="Opcional" />
+          <span class="mb-1.5 block text-sm font-medium text-white">{f.company}</span>
+          <input name="company" autocomplete="organization" class="field" placeholder={f.optional} />
         </label>
         <label class="block">
-          <span class="mb-1.5 block text-sm font-medium text-white">Tipo de proyecto *</span>
+          <span class="mb-1.5 block text-sm font-medium text-white">{f.projectType} *</span>
           <select name="projectType" required class="field">
-            <option value="" disabled selected>Selecciona…</option>
-            {projectTypes.map((t) => <option>{t}</option>)}
+            <option value="" disabled selected>{f.select}</option>
+            {t.projectTypes.map((p) => <option>{p}</option>)}
           </select>
         </label>
         <label class="block">
-          <span class="mb-1.5 block text-sm font-medium text-white">Presupuesto</span>
+          <span class="mb-1.5 block text-sm font-medium text-white">{f.budget}</span>
           <select name="budget" class="field">
-            <option value="" selected>Selecciona…</option>
-            {budgets.map((b) => <option>{b}</option>)}
+            <option value="" selected>{f.select}</option>
+            {t.budgets.map((b) => <option>{b}</option>)}
           </select>
         </label>
       </div>
 
       <label class="block">
-        <span class="mb-1.5 block text-sm font-medium text-white">Cuéntanos tu proyecto *</span>
-        <textarea name="message" required rows="5" class="field resize-y" placeholder="¿Qué necesitas? ¿Tienes web actualmente? ¿Para cuándo lo quieres?"></textarea>
+        <span class="mb-1.5 block text-sm font-medium text-white">{f.message} *</span>
+        <textarea name="message" required minlength="10" rows="5" class="field resize-y" placeholder={f.messagePh}></textarea>
       </label>
 
       <!-- Honeypot anti-spam: invisible para personas -->
       <div class="absolute -left-[9999px]" aria-hidden="true">
-        <label>No rellenar <input name="website" tabindex="-1" autocomplete="off" /></label>
+        <label>Website <input name="website" tabindex="-1" autocomplete="off" /></label>
       </div>
 
       <label class="flex items-start gap-3 text-sm text-zinc-400">
         <input name="consent" type="checkbox" required class="mt-0.5 h-4 w-4 accent-brand-400" />
-        <span>He leído y acepto la <a href="/privacidad" class="text-brand-400 underline-offset-2 hover:underline">política de privacidad</a>. *</span>
+        <span>{f.consentA} <a href={routes[lang].privacy} class="text-brand-400 underline-offset-2 hover:underline">{f.consentLink}</a>. *</span>
       </label>
 
       <button type="submit" class="btn-primary w-full disabled:cursor-wait disabled:opacity-60">
-        <span data-label>Enviar solicitud</span>
+        <span data-label>{t.submit}</span>
       </button>
 
       <p id="form-status" role="status" aria-live="polite" class="hidden rounded-xl px-4 py-3 text-sm"></p>
@@ -79,6 +90,10 @@ const budgets = ['Menos de 1.000€', '1.000€ – 3.000€', '3.000€ – 6.0
   import { actions, isInputError } from 'astro:actions';
 
   const form = document.getElementById('contact-form') as HTMLFormElement;
+  const i18n = JSON.parse(form.dataset.i18n!) as {
+    sending: string; submit: string; success: string; invalid: string; error: string;
+    labels: Record<string, string>;
+  };
   const status = document.getElementById('form-status')!;
   const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
   const label = button.querySelector('[data-label]')!;
@@ -93,20 +108,21 @@ const budgets = ['Menos de 1.000€', '1.000€ – 3.000€', '3.000€ – 6.0
     if (!form.reportValidity()) return;
 
     button.disabled = true;
-    label.textContent = 'Enviando…';
+    label.textContent = i18n.sending;
 
     const { error } = await actions.contact(new FormData(form));
 
     button.disabled = false;
-    label.textContent = 'Enviar solicitud';
+    label.textContent = i18n.submit;
 
     if (!error) {
       form.reset();
-      show('¡Gracias! Hemos recibido tu mensaje y te responderemos en menos de 24 horas.', true);
+      show(i18n.success, true);
     } else if (isInputError(error)) {
-      show('Revisa los campos marcados: ' + Object.values(error.fields).flat().join(' '), false);
+      const fields = Object.keys(error.fields).map((k) => i18n.labels[k] ?? k);
+      show(`${i18n.invalid} ${fields.join(', ')}`, false);
     } else {
-      show('No se pudo enviar el mensaje. Inténtalo de nuevo o escríbenos directamente por email.', false);
+      show(i18n.error, false);
     }
   });
 </script>

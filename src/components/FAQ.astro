@@ -1,21 +1,16 @@
 ---
-const faqs = [
-  { q: '¿Cuánto tarda en estar lista mi web?', a: 'Una landing page suele estar en 1–2 semanas y una web corporativa en 3–5 semanas. Proyectos a medida dependen del alcance; siempre te damos un plazo cerrado.' },
-  { q: '¿Podré editar los contenidos yo mismo?', a: 'Sí. Si lo necesitas, integramos un gestor de contenidos sencillo para que actualices textos, imágenes o publicaciones sin tocar código.' },
-  { q: '¿El dominio y el hosting están incluidos?', a: 'Te ayudamos a contratarlos a tu nombre para que siempre sean tuyos. Trabajamos con hosting moderno de alto rendimiento y en muchos casos el coste es mínimo o gratuito.' },
-  { q: '¿Cómo es el pago?', a: 'Normalmente un 50% al aprobar la propuesta y un 50% en la entrega. Para proyectos grandes podemos dividirlo por hitos.' },
-  { q: '¿Qué pasa después del lanzamiento?', a: 'Todos los planes incluyen un periodo de soporte. Después puedes contratar mantenimiento mensual para actualizaciones, copias de seguridad y mejoras.' },
-];
+import { useTranslations } from '../i18n/utils';
+const t = useTranslations(Astro.currentLocale).faq;
 ---
 <section id="faq" class="border-t border-white/5 bg-ink-900/40 py-24">
   <div class="container-lb max-w-3xl">
     <div class="reveal text-center">
-      <p class="eyebrow">Preguntas frecuentes</p>
-      <h2 class="section-title">Resolvemos tus dudas</h2>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section-title">{t.title}</h2>
     </div>
 
     <div class="mt-12 space-y-3">
-      {faqs.map((f) => (
+      {t.items.map((f) => (
         <details class="card reveal group !p-0">
           <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-semibold text-white [&::-webkit-details-marker]:hidden">
             {f.q}

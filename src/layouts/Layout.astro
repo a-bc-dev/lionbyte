@@ -2,18 +2,25 @@
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { defaultLang, getLang, languages, locales, routes, useTranslations, type PageKey } from '../i18n/utils';
 
 interface Props {
+  page: PageKey;
   title?: string;
-  description?: string;
 }
 
-const {
-  title = 'LionByte · Desarrollo web a medida que hace crecer tu negocio',
-  description = 'Diseñamos y desarrollamos webs rápidas, modernas y optimizadas para SEO: webs corporativas, tiendas online y aplicaciones a medida. Pide tu presupuesto sin compromiso.',
-} = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const { page, title = t.meta.title } = Astro.props;
+const description = t.meta.description;
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const canonical = new URL(routes[lang][page], Astro.site);
+const alternates = (Object.keys(languages) as (keyof typeof languages)[]).map((l) => ({
+  hreflang: locales[l],
+  href: new URL(routes[l][page], Astro.site).toString(),
+}));
 const ogImage = new URL('/og.png', Astro.site);
 
 const jsonLd = {
@@ -22,24 +29,27 @@ const jsonLd = {
   name: 'LionByte',
   url: Astro.site?.toString(),
   description,
-  areaServed: 'ES',
-  serviceType: ['Desarrollo web', 'Diseño web', 'Tiendas online', 'SEO técnico'],
+  inLanguage: Object.values(locales),
+  serviceType: t.services.items.map((s) => s.title),
 };
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locales[lang]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(routes[defaultLang][page], Astro.site)} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#07080c" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LionByte" />
+    <meta property="og:locale" content={locales[lang].replace('-', '_')} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -49,7 +59,9 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
+    <Header page={page} />
     <slot />
+    <Footer />
 
     <script>
       const els = document.querySelectorAll('.reveal');

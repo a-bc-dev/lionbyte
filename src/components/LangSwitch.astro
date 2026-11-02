@@ -1,0 +1,25 @@
+---
+import { getLang, languages, routes, useTranslations, type Lang, type PageKey } from '../i18n/utils';
+
+interface Props { page: PageKey; class?: string }
+const { page, class: className } = Astro.props;
+const current = getLang(Astro.currentLocale);
+const t = useTranslations(current);
+---
+<nav aria-label={t.nav.language} class:list={['flex items-center rounded-full border border-white/10 p-0.5 text-xs font-semibold', className]}>
+  {(Object.keys(languages) as Lang[]).map((l) => (
+    <a
+      href={routes[l][page]}
+      hreflang={l}
+      lang={l}
+      title={languages[l]}
+      aria-current={l === current ? 'true' : undefined}
+      class:list={[
+        'rounded-full px-2.5 py-1 uppercase transition',
+        l === current ? 'bg-white/10 text-white' : 'text-zinc-400 hover:text-white',
+      ]}
+    >
+      {l}
+    </a>
+  ))}
+</nav>

@@ -4,7 +4,8 @@ Web de captación de clientes para servicios de desarrollo web.
 
 ## Stack
 
-- **Astro 5**: web estática ultrarrápida, sin JS innecesario en el navegador
+- **Astro 7**: web estática ultrarrápida, sin JS innecesario en el navegador
+- **i18n nativo de Astro**: español (`/`), inglés (`/en/`) y rumano (`/ro/`)
 - **Tailwind CSS v4**: estilos
 - **TypeScript**
 - **Astro Actions + Zod**: formulario validado en servidor
@@ -26,9 +27,11 @@ Sin claves en `.env`, el formulario funciona igual y muestra los leads en la con
 ```
 src/
   actions/index.ts      → lógica del formulario (validación + email)
+  i18n/translations.ts  → TODOS los textos en es / en / ro (edita aquí)
+  i18n/utils.ts         → idiomas y URLs de cada página por idioma
   components/           → secciones de la landing
   layouts/              → plantilla base (SEO) y páginas legales
-  pages/                → index, privacidad, aviso-legal
+  pages/                → páginas por idioma (/, /en, /ro)
   styles/global.css     → tema Tailwind (colores de marca, fuentes)
 ```
 
@@ -36,7 +39,7 @@ src/
 
 - [ ] Dominio definitivo en `astro.config.mjs` (`site`) y `public/robots.txt`
 - [ ] Imagen `public/og.png` (1200×630) para compartir en redes
-- [ ] Datos reales en `privacidad.astro` y `aviso-legal.astro`
+- [ ] Datos reales de privacidad y aviso legal (en `src/i18n/translations.ts`, 3 idiomas)
 - [ ] Ajustar precios en `components/Pricing.astro`
 - [ ] Añadir sección de portfolio cuando haya proyectos
 

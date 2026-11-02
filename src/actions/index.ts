@@ -1,7 +1,8 @@
 import { defineAction, ActionError } from 'astro:actions';
-import { z } from 'astro:schema';
+import { z } from 'astro/zod';
 import { RESEND_API_KEY, CONTACT_TO, CONTACT_FROM } from 'astro:env/server';
 import { Resend } from 'resend';
+import { languages } from '../i18n/utils';
 
 const escape = (s = '') =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -10,14 +11,15 @@ export const server = {
   contact: defineAction({
     accept: 'form',
     input: z.object({
-      name: z.string().trim().min(2, 'Indica tu nombre.').max(100),
-      email: z.string().trim().email('El email no es válido.'),
+      lang: z.enum(['es', 'en', 'ro']).default('es'),
+      name: z.string().trim().min(2).max(100),
+      email: z.email(),
       phone: z.string().trim().max(30).optional(),
       company: z.string().trim().max(120).optional(),
-      projectType: z.string().min(1, 'Elige un tipo de proyecto.'),
+      projectType: z.string().min(1),
       budget: z.string().optional(),
-      message: z.string().trim().min(10, 'Cuéntanos un poco más (mín. 10 caracteres).').max(5000),
-      consent: z.boolean().refine((v) => v, 'Debes aceptar la política de privacidad.'),
+      message: z.string().trim().min(10).max(5000),
+      consent: z.boolean().refine((v) => v),
       website: z.string().optional(), // honeypot
     }),
     handler: async (input) => {
@@ -31,6 +33,7 @@ export const server = {
         ['Empresa', input.company],
         ['Tipo de proyecto', input.projectType],
         ['Presupuesto', input.budget],
+        ['Idioma', languages[input.lang]],
       ];
       const html = `
         <h2>Nuevo lead desde lionbyte</h2>
@@ -52,7 +55,7 @@ export const server = {
         from: CONTACT_FROM,
         to: CONTACT_TO,
         replyTo: input.email,
-        subject: `Nuevo lead: ${input.name} · ${input.projectType}`,
+        subject: `Nuevo lead [${input.lang.toUpperCase()}]: ${input.name} · ${input.projectType}`,
         html,
       });
 

@@ -9,7 +9,19 @@ export default defineConfig({
   site: 'https://lionbyte.es',
   output: 'static',
   adapter: vercel(),
-  integrations: [sitemap()],
+  i18n: {
+    locales: ['es', 'en', 'ro'],
+    defaultLocale: 'es',
+    routing: { prefixDefaultLocale: false },
+  },
+  integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: 'es',
+        locales: { es: 'es-ES', en: 'en', ro: 'ro-RO' },
+      },
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

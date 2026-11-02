@@ -1,17 +1,21 @@
 ---
 import Logo from './Logo.astro';
+import { getLang, routes, useTranslations } from '../i18n/utils';
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang).footer;
+const r = routes[lang];
 const year = new Date().getFullYear();
 ---
 <footer class="border-t border-white/5 py-12">
   <div class="container-lb flex flex-col items-center justify-between gap-6 text-sm text-zinc-500 sm:flex-row">
-    <a href="/" class="flex items-center gap-2 font-display font-bold text-white">
-      <Logo class="h-7 w-7" /> Lion<span class="text-brand-400">Byte</span>
+    <a href={r.home} class="flex items-center gap-2 font-display font-bold text-white">
+      <Logo class="h-7 w-7" /> <span>Lion<span class="text-brand-400">Byte</span></span>
     </a>
     <nav class="flex gap-6">
-      <a href="/privacidad" class="hover:text-white">Privacidad</a>
-      <a href="/aviso-legal" class="hover:text-white">Aviso legal</a>
-      <a href="/#contacto" class="hover:text-white">Contacto</a>
+      <a href={r.privacy} class="hover:text-white">{t.privacy}</a>
+      <a href={r.legal} class="hover:text-white">{t.legal}</a>
+      <a href={`${r.home}#contact`} class="hover:text-white">{t.contact}</a>
     </nav>
-    <p>© {year} LionByte. Todos los derechos reservados.</p>
+    <p>© {year} LionByte. {t.rights}</p>
   </div>
 </footer>
